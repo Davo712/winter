@@ -14,15 +14,12 @@ public class Main {
         context.start();
 
 
-        String filePath = "C:\\Users\\Davit.gevorgyan\\IdeaProjects\\winter\\src\\main\\java\\com\\winter\\context\\generatedClasses";
         String packagePath = "com.winter.context.generatedClasses";
         String projectRootPath = "com.winter.context";
-
-
         String example = "username:String/password:String/id:int/active:boolean/context:Context/v:Integer/c:ClassGenerator/ss:Scanner";
         String className = "User";
 
-        ClassGenerator classGenerator = new ClassGenerator(projectRootPath,filePath,packagePath);
+        ClassGenerator classGenerator = new ClassGenerator(projectRootPath,packagePath);
         classGenerator.generateClassFromXProtocol(className,example);
 
     }
