@@ -1,8 +1,6 @@
 package com.winter.context;
 
-import com.winter.context.annotation.Autowired;
 import com.winter.context.annotation.Bean;
-import com.winter.context.service.BeanCreatorService;
 import com.winter.context.util.ClassGenerator;
 
 
@@ -19,8 +17,8 @@ public class Main {
         String example = "username:String/password:String/id:int/active:boolean/context:Context/v:Integer/c:ClassGenerator/ss:Scanner";
         String className = "User";
 
-        ClassGenerator classGenerator = new ClassGenerator(projectRootPath,packagePath);
-        classGenerator.generateClassFromXProtocol(className,example);
+        ClassGenerator classGenerator = new ClassGenerator(projectRootPath, packagePath);
+        classGenerator.generateClassFromXProtocol(className, example);
 
     }
 }

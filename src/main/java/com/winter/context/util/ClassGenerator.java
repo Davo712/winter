@@ -7,6 +7,7 @@ import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,10 +51,17 @@ public class ClassGenerator {
 
         Reflections reflections = new Reflections(projectRootPath, new SubTypesScanner(false));
         Set<Class<?>> classes = reflections.getSubTypesOf(Object.class);
+        Set<String> classNames = new HashSet<>();
+        for (Class c:
+             classes) {
+            classNames.add(c.getSimpleName());
+        }
 
-        Set<String> ls = new HashSet<>();
         for (int i = 0; i < p.size(); i = i + 2) {
             if (!(p.get(i + 1).equals("int") || p.get(i + 1).equals("long") || p.get(i + 1).equals("short") || p.get(i + 1).equals("byte") || p.get(i + 1).equals("float") || p.get(i + 1).equals("double") || p.get(i + 1).equals("boolean") || p.get(i + 1).equals("char") || p.get(i + 1).equals("String"))) {
+                if (!(classNames.contains(p.get(i + 1)))) {
+                    imports = imports + "\n" + "import " + "java.util.*" + ";";
+                }
                 for (Class c :
                         classes) {
                     if (c.getSimpleName().equals(p.get(i + 1))) {
@@ -74,7 +82,6 @@ public class ClassGenerator {
         byte[] b = context.getBytes();
         fileOutputStream.write(b);
         fileOutputStream.close();
-
     }
 }
 
