@@ -37,6 +37,15 @@ public class ClassGenerator {
 
     }
 
+    public void generateMoreClasses(List<String> classNames, List<String> params) throws IOException, ClassNotFoundException {
+        if (classNames.size() == params.size()) {
+            ClassGenerator c = new ClassGenerator(projectRootPath,packagePath,otherClassesImports);
+            for (int i = 0; i < classNames.size(); i++) {
+                c.generateClassFromXProtocol(classNames.get(i),params.get(i));
+            }
+        }
+    }
+
     public void generateClassFromXProtocol(String className, String params) throws IOException, ClassNotFoundException {
         String filePath = "src/main/java/" + packagePath.replace(".", "/");
 
@@ -63,7 +72,7 @@ public class ClassGenerator {
 
         boolean isOtherClasses = false;
         for (int i = 0; i < p.size(); i = i + 2) {
-            if (!(p.get(i + 1).equals("int") || p.get(i + 1).equals("long") || p.get(i + 1).equals("short") || p.get(i + 1).equals("byte") || p.get(i + 1).equals("float") || p.get(i + 1).equals("double") || p.get(i + 1).equals("boolean") || p.get(i + 1).equals("char") || p.get(i + 1).equals("String"))) {
+            if (!(p.get(i + 1).equals("int") || p.get(i + 1).equals("long") || p.get(i + 1).equals("short") || p.get(i + 1).equals("byte") || p.get(i + 1).equals("float") || p.get(i + 1).equals("double") || p.get(i + 1).equals("boolean") || p.get(i + 1).equals("char") || p.get(i + 1).equals("String")) || p.get(i + 1).equals("Object") || p.get(i + 1).equals("Integer") || p.get(i + 1).equals("Long") || p.get(i + 1).equals("Short") || p.get(i + 1).equals("Float") || p.get(i + 1).equals("Double") || p.get(i + 1).equals("Byte") || p.get(i + 1).equals("Boolean")) {
                 if (!(classNames.contains(p.get(i + 1)))) {
                     isOtherClasses = true;
                 }
@@ -76,15 +85,19 @@ public class ClassGenerator {
             }
             fields = fields + "\n" + "    private " + p.get(i + 1) + " " + p.get(i) + ";";
         }
-//        if (isOtherClasses) {
-//            imports = imports + "\n" + "import " + "java.util.*" + ";";
-//        }
-        if (!otherClassesImports.isEmpty()) {
-            for (String impr :
-                    otherClassesImports) {
-                imports = imports + "\n" + "import " + impr + ";";
+        if (isOtherClasses) {
+            imports = imports + "\n" + "import " + "java.util.*" + ";";
+            imports = imports + "\n" + "import " + "java.io.*" + ";";
+        }
+        if (otherClassesImports != null) {
+            if ((!otherClassesImports.isEmpty())&&isOtherClasses) {
+                for (String impr :
+                        otherClassesImports) {
+                    imports = imports + "\n" + "import " + impr + ";";
+                }
             }
         }
+
         context = "package " + packagePath + ";" + "\n\n\n" +
                 "import lombok.Data;" + "\n" +
                 imports +
