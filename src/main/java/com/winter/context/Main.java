@@ -14,7 +14,7 @@ public class Main {
 
         String packagePath = "com.winter.context.generatedClasses";
         String projectRootPath = "com.winter.context";
-        String example = "username:String/password:String/id:int/active:boolean/context:Context/v:Integer/c:ClassGenerator/ss:Scanner";
+        String example = "username:String/password:String/id:int/active:boolean/context:Context/c:ClassGenerator";
         String className = "User";
 
         ClassGenerator classGenerator = new ClassGenerator(projectRootPath, packagePath);

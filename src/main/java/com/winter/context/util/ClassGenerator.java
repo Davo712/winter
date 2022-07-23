@@ -57,10 +57,11 @@ public class ClassGenerator {
             classNames.add(c.getSimpleName());
         }
 
+        boolean isOtherClasses = false;
         for (int i = 0; i < p.size(); i = i + 2) {
             if (!(p.get(i + 1).equals("int") || p.get(i + 1).equals("long") || p.get(i + 1).equals("short") || p.get(i + 1).equals("byte") || p.get(i + 1).equals("float") || p.get(i + 1).equals("double") || p.get(i + 1).equals("boolean") || p.get(i + 1).equals("char") || p.get(i + 1).equals("String"))) {
                 if (!(classNames.contains(p.get(i + 1)))) {
-                    imports = imports + "\n" + "import " + "java.util.*" + ";";
+                    isOtherClasses = true;
                 }
                 for (Class c :
                         classes) {
@@ -70,6 +71,9 @@ public class ClassGenerator {
                 }
             }
             fields = fields + "\n" + "    private " + p.get(i + 1) + " " + p.get(i) + ";";
+        }
+        if (isOtherClasses) {
+            imports = imports + "\n" + "import " + "java.util.*" + ";";
         }
         context = "package " + packagePath + ";" + "\n\n\n" +
                 "import lombok.Data;" + "\n" +
