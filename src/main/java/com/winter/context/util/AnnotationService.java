@@ -28,8 +28,8 @@ public class AnnotationService {
         Set<Class<?>> typesAnnotatedWith = reflections.getTypesAnnotatedWith(Bean.class);
         typesAnnotatedWith.forEach(aClass -> {
             Field[] fields = aClass.getDeclaredFields();
-            for (Field f:
-                 fields) {
+            for (Field f :
+                    fields) {
                 if (f.isAnnotationPresent(Autowired.class)) {
                     fieldsSet.add(f);
                 }

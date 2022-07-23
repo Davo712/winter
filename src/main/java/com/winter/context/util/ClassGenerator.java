@@ -1,28 +1,32 @@
 package com.winter.context.util;
 
-import com.sun.source.tree.ImportTree;
 import com.winter.context.annotation.Bean;
-import javassist.tools.rmi.ObjectImporter;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
 
 @Bean
 public class ClassGenerator {
 
-    public static final String EXAMPLE = "username:String/password:String/id:int/active:boolean/context:Context";
+    public static final String XPROTOCOLEXAMPLE = "username:String/password:String/id:int/active:boolean/context:Context";
+    public static final String IMPORTEXAMPLE = "org.reflections.Reflections";
+
     public String projectRootPath;
     public String packagePath;
+    public List<String> otherClassesImports;
 
+    public ClassGenerator(String projectRootPath, String packagePath, List<String> otherClassesImports) {
+        this.projectRootPath = projectRootPath;
+        this.packagePath = packagePath;
+        this.otherClassesImports = otherClassesImports;
+    }
 
     public ClassGenerator(String projectRootPath, String packagePath) {
         this.projectRootPath = projectRootPath;
@@ -52,8 +56,8 @@ public class ClassGenerator {
         Reflections reflections = new Reflections(projectRootPath, new SubTypesScanner(false));
         Set<Class<?>> classes = reflections.getSubTypesOf(Object.class);
         Set<String> classNames = new HashSet<>();
-        for (Class c:
-             classes) {
+        for (Class c :
+                classes) {
             classNames.add(c.getSimpleName());
         }
 
@@ -72,8 +76,14 @@ public class ClassGenerator {
             }
             fields = fields + "\n" + "    private " + p.get(i + 1) + " " + p.get(i) + ";";
         }
-        if (isOtherClasses) {
-            imports = imports + "\n" + "import " + "java.util.*" + ";";
+//        if (isOtherClasses) {
+//            imports = imports + "\n" + "import " + "java.util.*" + ";";
+//        }
+        if (!otherClassesImports.isEmpty()) {
+            for (String impr :
+                    otherClassesImports) {
+                imports = imports + "\n" + "import " + impr + ";";
+            }
         }
         context = "package " + packagePath + ";" + "\n\n\n" +
                 "import lombok.Data;" + "\n" +
@@ -85,6 +95,7 @@ public class ClassGenerator {
 
         byte[] b = context.getBytes();
         fileOutputStream.write(b);
+        System.out.println("Generated class: " + className + ".java");
         fileOutputStream.close();
     }
 }
