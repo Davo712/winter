@@ -1,3 +1,3 @@
 # winter (Class Generator / Annotations)
-This is a mini library for those who don't want to use the huge spring framework but want the @Bean and @Autowired annotations.
-The library also cans to generate classes from the new xProtocol.
+
+This is a class generation library. The library also has a bean container (in short, you can use these @Bean, @Autowired annotations). The new xProtocol is used to generate classes, all examples are in the library codes.
