@@ -1,6 +1,7 @@
 package com.winter.context.service;
 
 
+import com.winter.context.Context;
 import com.winter.context.annotation.Bean;
 import com.winter.context.util.AnnotationService;
 
@@ -10,12 +11,17 @@ import java.util.Set;
 
 public class BeanCreatorService {
 
-    public static HashMap<String, Object> beans = new HashMap<>();
-    public static String scope = "SINGLETON";
+    private static HashMap<String, Object> beans = new HashMap<>();
+    private static String scope = "SINGLETON";
     private static int index = 1;
 
 
     static void createBean(String path) throws Exception {
+        if (!Context.isRunned) {
+            System.out.println("Winter is not runned");
+            return;
+        }
+
         Set<Class<?>> classes = AnnotationService.getAnnotatedClasses(Bean.class, path);
         for (Class c :
                 classes) {
@@ -40,6 +46,11 @@ public class BeanCreatorService {
 
 
     static <T> T getBean(Class<T> c) throws Exception {
+        if (!Context.isRunned) {
+            System.out.println("Winter is not runned");
+            return null;
+        }
+
         String[] s = c.getSimpleName().split("");
         s[0] = s[0].toLowerCase();
         String beanName = "";

@@ -1,6 +1,7 @@
 package com.winter.context.util;
 
 
+import com.winter.context.Context;
 import com.winter.context.annotation.Autowired;
 import com.winter.context.annotation.Bean;
 import org.reflections.Reflections;
@@ -14,6 +15,11 @@ public class AnnotationService {
 
 
     public static Set<Class<?>> getAnnotatedClasses(Class<? extends Annotation> annotation, String path) {
+        if (!Context.isRunned) {
+            System.out.println("Winter is not runned");
+            return null;
+        }
+
         Reflections reflections = new Reflections(path);
         Set<Class<?>> annotatedClasses = reflections.getTypesAnnotatedWith(annotation, true);
         if (annotatedClasses.size() == 0) {
@@ -23,6 +29,11 @@ public class AnnotationService {
     }
 
     public static Set<Field> getAutowiredFields(Class<? extends Annotation> annotation, String path) {
+        if (!Context.isRunned) {
+            System.out.println("Winter is not runned");
+            return null;
+        }
+
         Set<Field> fieldsSet = new HashSet<>();
         Reflections reflections = new Reflections(path);
         Set<Class<?>> typesAnnotatedWith = reflections.getTypesAnnotatedWith(Bean.class);

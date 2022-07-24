@@ -14,7 +14,10 @@ public class Context {
 
     public String scanPath;
 
+    public static boolean isRunned;
+
     public void start() throws Exception {
+        isRunned = true;
 
         Class<?> clazz = Class.forName(BeanCreatorService.class.getName());
         Object obj = clazz.getConstructor();
@@ -31,6 +34,10 @@ public class Context {
     }
 
     public <T> T getBean(Class<T> c) throws Exception {
+        if (!isRunned) {
+            System.out.println("Winter is not runned");
+            return null;
+        }
         Class<?> clazz = Class.forName(BeanCreatorService.class.getName());
         Object obj = clazz.getConstructor();
         Method method = clazz.getDeclaredMethod("getBean", Class.class);
