@@ -1,10 +1,20 @@
 package com.winter.context.vertx;
 
 import com.winter.context.Context;
+import com.winter.context.generatedClasses.User;
+import com.winter.context.service.BeanCreatorService;
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
+import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.json.Json;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
+
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.List;
 
 
 public class Web extends AbstractVerticle {
@@ -13,30 +23,16 @@ public class Web extends AbstractVerticle {
     private Router router = Router.router(vertx);
 
     public int port;
+    public Class aClass;
 
-    private Web(int port) {
+    public Web(int port, Class aClass) {
         this.port = port;
+        this.aClass = aClass;
     }
 
-    public static Web getWeb(int port) {
-        Web web = new Web(port);
+    public static Web getWeb(int port, Class aClass) {
+        Web web = new Web(port, aClass);
         return web;
-    }
-
-
-    public void createEndPoint(String endPoint, String httpMethodType, String response) {
-        if (!Context.isRunned) {
-            return;
-        }
-        if (httpMethodType.equals("get")) {
-            router.get(endPoint).handler(routingContext -> {
-               routingContext.end(response);
-            });
-        } else if (httpMethodType.equals("post")) {
-            router.post(endPoint).handler(routingContext -> {
-                routingContext.end(response);
-            });
-        }
     }
 
     public void run() {
@@ -54,6 +50,75 @@ public class Web extends AbstractVerticle {
         }
         server.requestHandler(router);
         server.listen(port);
+    }
+
+    /// -----------------------------------------------------
+
+    public void createEndPoint(String endPoint, String httpMethodType, Object response) {
+        if (!Context.isRunned) {
+            return;
+        }
+        if (httpMethodType.equals("get")) {
+            router.get(endPoint).handler(routingContext -> {
+                HttpServerResponse rsp = routingContext.response();
+                rsp.putHeader("content-type", "application/json");
+                rsp.end(Json.encodeToBuffer(response));
+            });
+        } else if (httpMethodType.equals("post")) {
+            router.post(endPoint).handler(routingContext -> {
+                HttpServerResponse rsp = routingContext.response();
+                rsp.putHeader("content-type", "application/json");
+                rsp.end(Json.encodeToBuffer(response));
+            });
+        }
+    }
+
+    public void createEndPoint(String endPoint, String httpMethodType, String response) {
+        if (!Context.isRunned) {
+            return;
+        }
+        if (httpMethodType.equals("get")) {
+            router.get(endPoint).handler(routingContext -> {
+                routingContext.end(response);
+            });
+        } else if (httpMethodType.equals("post")) {
+            router.post(endPoint).handler(routingContext -> {
+                routingContext.end(response);
+            });
+        }
+    }
+
+    public void createRedirect(String endPoint, String httpMethodType, String redirectTo) {
+        if (!Context.isRunned) {
+            return;
+        }
+        if (httpMethodType.equals("get")) {
+            router.get(endPoint).handler(routingContext -> routingContext.redirect(redirectTo));
+        } else if (httpMethodType.equals("post")) {
+            router.post(endPoint).handler(routingContext -> routingContext.redirect(redirectTo));
+        }
+    }
+
+    public void createEndPointWithParams(String endPoint, String httpMethodType, List<String> paramNames, String response) {
+        if (!Context.isRunned) {
+            return;
+        }
+
+        if (httpMethodType.equals("get")) {
+            router.get(endPoint).handler(routingContext -> {
+                for (int i = 0; i < paramNames.size(); i++) {
+                    System.out.println(routingContext.request().getParam(paramNames.get(i)));
+                }
+                routingContext.end(response);
+            });
+        } else if (httpMethodType.equals("post")) {
+            router.post(endPoint).handler(routingContext -> {
+                for (int i = 0; i < paramNames.size(); i++) {
+                    System.out.println(routingContext.request().getParam(paramNames.get(i)));
+                }
+                routingContext.end(response);
+            });
+        }
     }
 
 }
