@@ -1,20 +1,35 @@
 package com.winter.context;
 
-import com.winter.context.annotation.Bean;
 import com.winter.context.service.AutowiredService;
 import com.winter.context.service.BeanCreatorService;
+import com.winter.context.util.ClassGenerator;
+import lombok.Data;
 
 import java.lang.reflect.Method;
 
+@Data
 public class Context {
 
-    public Context(String scanPath) {
-        this.scanPath = scanPath;
+    private Context() {
     }
+
+    private ClassGenerator classGenerator;
 
     public String scanPath;
 
     public static boolean isRunned;
+
+    public static Context getContext(String scanPath) {
+        Context context = new Context();
+        context.scanPath = scanPath;
+        return context;
+    }
+    public static Context getContext(String scanPath, ClassGenerator classGenerator) {
+        Context context = new Context();
+        context.scanPath = scanPath;
+        context.classGenerator = classGenerator;
+        return context;
+    }
 
     public void start() throws Exception {
         isRunned = true;

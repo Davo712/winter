@@ -2,8 +2,6 @@ package com.winter.context;
 
 import com.winter.context.annotation.Autowired;
 import com.winter.context.annotation.Bean;
-import com.winter.context.generatedClasses.User;
-import com.winter.context.service.BeanCreatorService;
 import com.winter.context.util.AnnotationService;
 import com.winter.context.util.ClassGenerator;
 
@@ -20,8 +18,10 @@ public class Main {
     private static ClassGenerator classGenerator;
 
     public static void main(String[] args) throws Exception {
-        Context context = new Context("com");
+        Context context = Context.getContext("com",new ClassGenerator("com.winter.context","com.winter.context.generatedClasses"));
         context.start();
+        ClassGenerator classGenerator = context.getClassGenerator();
+
 
         System.out.println(AnnotationService.getAnnotatedClasses(Bean.class, "com"));
         System.out.println(classGenerator.toString());

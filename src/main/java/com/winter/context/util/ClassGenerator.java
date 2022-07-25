@@ -83,19 +83,21 @@ public class ClassGenerator {
         }
 
         String filePath = "src/main/java/" + packagePath.replace(".", "/");
-
         File file = new File(filePath + "\\" + className + ".java");
         FileOutputStream fileOutputStream = new FileOutputStream(file);
         String imports = "";
         String fields = "";
         String content;
 
-        List<String> p = new ArrayList<>();
+        // Get params from xProtocol
+        List<String> typesAndObjectsNames = new ArrayList<>();
         String[] s = params.split("/");
         for (int i = 0; i < s.length; i++) {
-            p.add(s[i].split(":")[0]);
-            p.add(s[i].split(":")[1]);
+            typesAndObjectsNames.add(s[i].split(":")[0]);
+            typesAndObjectsNames.add(s[i].split(":")[1]);
         }
+
+        // Scan all classes in project and add class names in Set
         Reflections reflections = new Reflections(projectRootPath, new SubTypesScanner(false));
         Set<Class<?>> classes = reflections.getSubTypesOf(Object.class);
         Set<String> classNames = new HashSet<>();
@@ -103,20 +105,22 @@ public class ClassGenerator {
                 classes) {
             classNames.add(c.getSimpleName());
         }
+
+        // Get fields, imports, extends, implements
         boolean isOtherClasses = false;
-        for (int i = 0; i < p.size(); i = i + 2) {
-            if (!(p.get(i + 1).equals("int") || p.get(i + 1).equals("long") || p.get(i + 1).equals("short") || p.get(i + 1).equals("byte") || p.get(i + 1).equals("float") || p.get(i + 1).equals("double") || p.get(i + 1).equals("boolean") || p.get(i + 1).equals("char") || p.get(i + 1).equals("String")) || p.get(i + 1).equals("Object") || p.get(i + 1).equals("Integer") || p.get(i + 1).equals("Long") || p.get(i + 1).equals("Short") || p.get(i + 1).equals("Float") || p.get(i + 1).equals("Double") || p.get(i + 1).equals("Byte") || p.get(i + 1).equals("Boolean")) {
-                if (!(classNames.contains(p.get(i + 1)))) {
+        for (int i = 0; i < typesAndObjectsNames.size(); i = i + 2) {
+            if (!(typesAndObjectsNames.get(i + 1).equals("int") || typesAndObjectsNames.get(i + 1).equals("long") || typesAndObjectsNames.get(i + 1).equals("short") || typesAndObjectsNames.get(i + 1).equals("byte") || typesAndObjectsNames.get(i + 1).equals("float") || typesAndObjectsNames.get(i + 1).equals("double") || typesAndObjectsNames.get(i + 1).equals("boolean") || typesAndObjectsNames.get(i + 1).equals("char") || typesAndObjectsNames.get(i + 1).equals("String")) || typesAndObjectsNames.get(i + 1).equals("Object") || typesAndObjectsNames.get(i + 1).equals("Integer") || typesAndObjectsNames.get(i + 1).equals("Long") || typesAndObjectsNames.get(i + 1).equals("Short") || typesAndObjectsNames.get(i + 1).equals("Float") || typesAndObjectsNames.get(i + 1).equals("Double") || typesAndObjectsNames.get(i + 1).equals("Byte") || typesAndObjectsNames.get(i + 1).equals("Boolean")) {
+                if (!(classNames.contains(typesAndObjectsNames.get(i + 1)))) {
                     isOtherClasses = true;
                 }
                 for (Class c :
                         classes) {
-                    if (c.getSimpleName().equals(p.get(i + 1))) {
+                    if (c.getSimpleName().equals(typesAndObjectsNames.get(i + 1))) {
                         imports = imports + "\n" + "import " + c.getPackageName() + "." + c.getSimpleName() + ";";
                     }
                 }
             }
-            fields = fields + "\n" + "    private " + p.get(i + 1) + " " + p.get(i) + ";";
+            fields = fields + "\n" + "    private " + typesAndObjectsNames.get(i + 1) + " " + typesAndObjectsNames.get(i) + ";";
         }
         if (isOtherClasses) {
             imports = imports + "\n" + "import " + "java.util.*" + ";";
@@ -148,6 +152,8 @@ public class ClassGenerator {
                 implContent = implContent + " " + implInterfaces.get(i).getSimpleName() + ",";
             }
         }
+
+        // Get content and generate class
         content = "package " + packagePath + ";" + "\n\n\n" +
                 "import lombok.Data;" + "\n" +
                 imports +
