@@ -62,6 +62,7 @@ public class ClassGenerator {
 
     }
 
+
     public void generateMoreClasses(List<String> classNames, List<String> params) throws IOException, ClassNotFoundException {
         if (!Context.isRunned) {
             System.out.println("Winter is not runned");
