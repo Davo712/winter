@@ -32,6 +32,7 @@ public class Context {
     }
 
     public void start() throws Exception {
+        System.out.println("Context started");
         isRunned = true;
 
         Class<?> clazz = Class.forName(BeanCreatorService.class.getName());

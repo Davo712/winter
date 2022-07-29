@@ -1,23 +1,17 @@
 package com.winter.context.vertx;
 
 import com.winter.context.Context;
-import com.winter.context.generatedClasses.User;
-import com.winter.context.service.BeanCreatorService;
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.Json;
-import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 
-import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.List;
 
 
-public class Web extends AbstractVerticle {
+public class WebVertx extends AbstractVerticle {
     private Vertx vertx = Vertx.vertx();
     private HttpServer server = vertx.createHttpServer();
     private Router router = Router.router(vertx);
@@ -25,14 +19,17 @@ public class Web extends AbstractVerticle {
     public int port;
     public Class aClass;
 
-    public Web(int port, Class aClass) {
+    public WebVertx(int port, Class aClass) {
         this.port = port;
         this.aClass = aClass;
     }
 
-    public static Web getWeb(int port, Class aClass) {
-        Web web = new Web(port, aClass);
-        return web;
+    public static WebVertx getWebVertx(int port, Class aClass) {
+        if (!Context.isRunned) {
+            return null;
+        }
+        WebVertx webVertx = new WebVertx(port, aClass);
+        return webVertx;
     }
 
     public void run() {
