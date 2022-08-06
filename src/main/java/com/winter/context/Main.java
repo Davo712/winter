@@ -49,7 +49,6 @@ public class Main {
         names.add("User");
         names.add("TestUser");
 
-
       //  classGenerator.generateMoreClasses(names, l);
 
 

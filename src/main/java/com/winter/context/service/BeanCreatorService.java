@@ -30,7 +30,8 @@ public class BeanCreatorService {
                     return;
                 } else {
                     Class<?> clazz = Class.forName(c.getName());
-                    Constructor<?> ctor = clazz.getConstructor();
+                    Constructor<?> ctor;
+                    ctor = clazz.getConstructor();
                     Object object = ctor.newInstance();
                     String[] s = c.getSimpleName().split("");
                     s[0] = s[0].toLowerCase();
@@ -45,7 +46,7 @@ public class BeanCreatorService {
     }
 
 
-    static <T> T getBean(Class<T> c) throws Exception {
+    public static <T> T getBean(Class<T> c) throws Exception {
         if (!Context.isRunned) {
             System.out.println("Winter is not runned");
             return null;
