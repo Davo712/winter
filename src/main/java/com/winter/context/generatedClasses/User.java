@@ -10,6 +10,7 @@ public class User {
     private String username;
     private Boolean active;
     private String activation_code;
+    private Long balance;
     public User() {
 
     }

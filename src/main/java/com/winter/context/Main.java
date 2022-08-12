@@ -18,12 +18,17 @@ public class Main {
         context.start();
 
 
-        DbConnector dbConnector = new DbConnector("banandb","root","","localhost:3306");
-        String yQuery = "add user (id=7,username='test3232@mail.ru',active=true,balance=0)";
-        String yQuery1 = "add user";
+        DbConnector dbConnector = new DbConnector("banandb", "root", "", "localhost:3306");
+        String y = "get user (id=95)";
+        String x = "get user";
 
-        dbConnector.setQuery(yQuery,User.class);
 
+        User user = new User();
+        user.setUsername("dav@mail.ru");
+
+
+       User user1 = dbConnector.setQuery(x,User.class,user);
+        System.out.println(user1);
 
 
 

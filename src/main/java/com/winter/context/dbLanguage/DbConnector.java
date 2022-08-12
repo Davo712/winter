@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 
@@ -48,11 +49,12 @@ public class DbConnector {
             return null;
         }
         String[] strings = yQuery.split(" ");
+        String some;
         switch (strings[0]) {
             case "get":
-                String x = strings[2].replace("(", "");
-                x = x.replace(")", "");
-                String[] params = x.split(",");
+                some = strings[2].replace("(", "");
+                some = some.replace(")", "");
+                String[] params = some.split(",");
                 String queryParams = "";
                 for (int i = 0; i < params.length; i++) {
                     if (params.length - i == 1) {
@@ -63,9 +65,9 @@ public class DbConnector {
                 }
                 return getQuery(strings[1], queryParams, c);
             case "add":
-                String y = strings[2].replace("(", "");
-                y = y.replace(")", "");
-                String[] keyValue = y.split(",");
+                some = strings[2].replace("(", "");
+                some = some.replace(")", "");
+                String[] keyValue = some.split(",");
                 HashMap<String, String> map = new HashMap<>();
                 for (int i = 0; i < keyValue.length; i++) {
                     map.put(keyValue[i].split("=")[0], (keyValue[i].split("=")[1]));
@@ -94,21 +96,56 @@ public class DbConnector {
         return null;
     }
 
-    public void setQuery(String yQuery,Object object) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public <T> T  setQuery(String yQuery,Class<?> c,Object object) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         if (!Context.isRunned) {
-            return;
+            return null;
         }
-        String[] strings = yQuery.split(" ");
-        switch (strings[0]) {
-            case "add":
-                String y = strings[2].replace("(", "");
-                y = y.replace(")", "");
-                String[] keyValue = y.split(",");
-                HashMap<String, String> map = new HashMap<>();
-                for (int i = 0; i < keyValue.length; i++) {
-                    map.put(keyValue[i].split("=")[0], (keyValue[i].split("=")[1]));
-                }
 
+        String[] strings = yQuery.split(" ");
+        Field[] fields = c.getFields();
+        switch (strings[0]) {
+            case "get":
+                if (fields.length == 0) {
+                    fields = c.getDeclaredFields();
+                    for (int i = 0; i < fields.length ; i++) {
+                        fields[i].setAccessible(true);
+                    }
+                }
+                String queryParams = "";
+                for (int i = 0; i < fields.length ; i++) {
+                    if (fields[i].get(object) instanceof String) {
+                    }
+                    if (fields.length - i == 1) {
+                        if (fields[i].get(object) instanceof String) {
+                            queryParams = queryParams + fields[i].getName() + "=" + "'" +fields[i].get(object) + "'";
+                        } else {
+                            queryParams = queryParams + fields[i].getName() + "=" + fields[i].get(object);
+
+                        }
+                    } else {
+                        if (fields[i].get(object) instanceof String) {
+                            queryParams = queryParams + fields[i].getName() + "=" + "'" +fields[i].get(object) + "'" +" and ";
+                        } else  {
+                            queryParams = queryParams + fields[i].getName() + "=" + fields[i].get(object) + " and ";
+                        }
+                    }
+                }
+                return (T) getQuery(strings[1], queryParams, c);
+            case "add":
+                if (fields.length == 0) {
+                    fields = c.getDeclaredFields();
+                    for (int i = 0; i < fields.length ; i++) {
+                        fields[i].setAccessible(true);
+                    }
+                }
+                HashMap<String,String> map = new HashMap();
+                for (int i = 0; i < fields.length ; i++) {
+                    if (fields[i].get(object) instanceof String) {
+                        map.put(fields[i].getName(), String.valueOf("'" + fields[i].get(object) + "'"));
+                    } else {
+                        map.put(fields[i].getName(), String.valueOf(fields[i].get(object)));
+                    }
+                }
                 String content = "(";
                 String values = "(";
                 for (Map.Entry<String, String> entry : map.entrySet()) {
@@ -129,18 +166,20 @@ public class DbConnector {
             case "update":
                 break;
             default:
-                return;
+                return null;
         }
-        return;
+        return null;
     }
 
 
     private void addQuery(String tableName, String content, String values) throws SQLException, ClassNotFoundException {
+        System.out.println("insert into " + tableName + " " + content + " values " + values);
         connectToDBAndGetStatement().executeUpdate("insert into " + tableName + " " + content + " values " + values);
         System.out.println("Added");
     }
 
     private <T> T getQuery(String tableName, String queryParams, Class<T> c) throws SQLException, ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+        System.out.println("select * from " + tableName + " where " + queryParams);
         ResultSet resultSet = connectToDBAndGetStatement().executeQuery("select * from " + tableName + " where " + queryParams);
         Constructor<?> ctor = c.getConstructor();
         Object o = ctor.newInstance();
