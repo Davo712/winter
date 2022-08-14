@@ -3,7 +3,10 @@ package com.winter.context;
 import com.winter.context.service.AutowiredService;
 import com.winter.context.service.BeanCreatorService;
 import com.winter.context.util.ClassGenerator;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.lang.reflect.Method;
 
@@ -13,6 +16,8 @@ public class Context {
     private Context() {
     }
 
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
     private ClassGenerator classGenerator;
 
     public String scanPath;

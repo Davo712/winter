@@ -27,8 +27,8 @@ public class DbConnector {
         this.hostName = hostName;
     }
 
-    public static final String yQuerySelectExample = "get user (id=1,username='dav@mail.ru',name='dav')";
-    public static final String yQueryInsertExample = "add user (id=1,username='test@mail.ru')";
+    public static final String Y_QUERY_SELECT_EXAMPLE = "get user (id=1,username='dav@mail.ru',name='dav')";
+    public static final String Y_QUERY_INSERT_EXAMPLE  = "add user (id=1,username='test@mail.ru')";
 
 
     public Statement connectToDBAndGetStatement() throws ClassNotFoundException, SQLException {
