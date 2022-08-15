@@ -134,11 +134,11 @@ public class DbConnector {
                 }
                 String queryParams = "";
                 for (int i = 0; i < fields.length; i++) {
-                    if (fields[i].get(object) instanceof String) {
-                    }
                     if (fields.length - i == 1) {
                         if (fields[i].get(object) instanceof String) {
                             queryParams = queryParams + fields[i].getName() + "=" + "'" + fields[i].get(object) + "'";
+                        } else if (fields[i].get(object) == null) {
+                            queryParams = queryParams + fields[i].getName() + " is " + fields[i].get(object);
                         } else {
                             queryParams = queryParams + fields[i].getName() + "=" + fields[i].get(object);
 
@@ -146,6 +146,8 @@ public class DbConnector {
                     } else {
                         if (fields[i].get(object) instanceof String) {
                             queryParams = queryParams + fields[i].getName() + "=" + "'" + fields[i].get(object) + "'" + " and ";
+                        } else if (fields[i].get(object) == null) {
+                            queryParams = queryParams + fields[i].getName() + " is " + fields[i].get(object) + " and ";
                         } else {
                             queryParams = queryParams + fields[i].getName() + "=" + fields[i].get(object) + " and ";
                         }
@@ -183,7 +185,41 @@ public class DbConnector {
                 addQuery(strings[1], content, values);
                 break;
             case "delete":
-                break;
+                if (fields.length == 0) {
+                    fields = c.getDeclaredFields();
+                    for (int i = 0; i < fields.length; i++) {
+                        fields[i].setAccessible(true);
+                    }
+                }
+                String queryParams1 = "";
+                for (int i = 0; i < fields.length; i++) {
+                    if (fields.length - i == 1) {
+                        if (fields[i].get(object) instanceof String) {
+                            queryParams1 = queryParams1 + fields[i].getName() + "=" + "'" + fields[i].get(object) + "'";
+                        } else if (fields[i].get(object) == null) {
+                            queryParams1 = queryParams1 + fields[i].getName() + " is " + fields[i].get(object);
+                        } else {
+                            queryParams1 = queryParams1 + fields[i].getName() + "=" + fields[i].get(object);
+                        }
+                    } else {
+                        if (fields[i].get(object) instanceof String) {
+                            queryParams1 = queryParams1 + fields[i].getName() + "=" + "'" + fields[i].get(object) + "'" + " and ";
+                        } else if (fields[i].get(object) == null) {
+                            queryParams1 = queryParams1 + fields[i].getName() + " is " + fields[i].get(object) + " and ";
+                        } else {
+                            queryParams1 = queryParams1 + fields[i].getName() + "=" + fields[i].get(object) + " and ";
+                        }
+                    }
+                }
+                if (deleteQuery(strings[1], queryParams1)) {
+                    boolean t = true;
+                    Optional<T> b = (Optional<T>) Optional.of(t);
+                    return (T) b.get();
+                } else {
+                    boolean t = false;
+                    Optional<T> b = (Optional<T>) Optional.of(t);
+                    return (T) b.get();
+                }
             case "update":
                 break;
             default:

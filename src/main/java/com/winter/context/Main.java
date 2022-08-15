@@ -17,16 +17,11 @@ public class Main {
         // classGenerator.generateClassFromXProtocol("User","username:String/password:String/active:boolean/activation_code:String/balance:long/id:long");
 
         DbConnector dbConnector = new DbConnector("banandb", "root", "", "localhost:3306");
-        String y = "get user (id=95)";
-        String x = "delete user (id=101)";
-        User user = new User();
-        user.setUsername("dav@mail.ru");
-        System.out.println(dbConnector.execute(x, User.class));
+        String y = "get user (id=16)";
+        String x = "get user";
+        User user = dbConnector.execute(y, User.class);
 
-
-
-
-
+        System.out.println((User) dbConnector.execute(x, User.class, user));
 
 
     }
