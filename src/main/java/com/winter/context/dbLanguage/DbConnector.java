@@ -28,10 +28,11 @@ public class DbConnector {
     }
 
     public static final String Y_QUERY_SELECT_EXAMPLE = "get user (id=1,username='dav@mail.ru',name='dav')";
-    public static final String Y_QUERY_INSERT_EXAMPLE  = "add user (id=1,username='test@mail.ru')";
+    public static final String Y_QUERY_INSERT_EXAMPLE = "add user (id=1,username='test@mail.ru')";
+    public static final String Y_QUERY_DELETE_EXAMPLE = "delete user (id=1)";
 
 
-    public Statement connectToDBAndGetStatement() throws ClassNotFoundException, SQLException {
+    private Statement connectToDBAndGetStatement() throws ClassNotFoundException, SQLException {
         if (!Context.isRunned) {
             return null;
         }
@@ -44,7 +45,7 @@ public class DbConnector {
         return statement;
     }
 
-    public <T> T setQuery(String yQuery, Class<T> c) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public <T> T execute(String yQuery, Class<T> c) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         if (!Context.isRunned) {
             return null;
         }
@@ -89,14 +90,34 @@ public class DbConnector {
                 addQuery(strings[1], content, values);
                 break;
             case "delete":
-                break;
+                some = strings[2].replace("(", "");
+                some = some.replace(")", "");
+                String[] params1 = some.split(",");
+                String queryParams1 = "";
+                for (int i = 0; i < params1.length; i++) {
+                    if (params1.length - i == 1) {
+                        queryParams1 = queryParams1 + params1[i];
+                        break;
+                    }
+                    queryParams1 = queryParams1 + params1[i] + " and ";
+                }
+                if (deleteQuery(strings[1], queryParams1)) {
+                    boolean t = true;
+                    Optional<T> b = (Optional<T>) Optional.of(t);
+                    return (T) b.get();
+                } else {
+                    boolean t = false;
+                    Optional<T> b = (Optional<T>) Optional.of(t);
+                    return (T) b.get();
+                }
+
             case "update":
                 break;
         }
         return null;
     }
 
-    public <T> T  setQuery(String yQuery,Class<?> c,Object object) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public <T> T execute(String yQuery, Class<?> c, Object object) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         if (!Context.isRunned) {
             return null;
         }
@@ -107,25 +128,25 @@ public class DbConnector {
             case "get":
                 if (fields.length == 0) {
                     fields = c.getDeclaredFields();
-                    for (int i = 0; i < fields.length ; i++) {
+                    for (int i = 0; i < fields.length; i++) {
                         fields[i].setAccessible(true);
                     }
                 }
                 String queryParams = "";
-                for (int i = 0; i < fields.length ; i++) {
+                for (int i = 0; i < fields.length; i++) {
                     if (fields[i].get(object) instanceof String) {
                     }
                     if (fields.length - i == 1) {
                         if (fields[i].get(object) instanceof String) {
-                            queryParams = queryParams + fields[i].getName() + "=" + "'" +fields[i].get(object) + "'";
+                            queryParams = queryParams + fields[i].getName() + "=" + "'" + fields[i].get(object) + "'";
                         } else {
                             queryParams = queryParams + fields[i].getName() + "=" + fields[i].get(object);
 
                         }
                     } else {
                         if (fields[i].get(object) instanceof String) {
-                            queryParams = queryParams + fields[i].getName() + "=" + "'" +fields[i].get(object) + "'" +" and ";
-                        } else  {
+                            queryParams = queryParams + fields[i].getName() + "=" + "'" + fields[i].get(object) + "'" + " and ";
+                        } else {
                             queryParams = queryParams + fields[i].getName() + "=" + fields[i].get(object) + " and ";
                         }
                     }
@@ -134,12 +155,12 @@ public class DbConnector {
             case "add":
                 if (fields.length == 0) {
                     fields = c.getDeclaredFields();
-                    for (int i = 0; i < fields.length ; i++) {
+                    for (int i = 0; i < fields.length; i++) {
                         fields[i].setAccessible(true);
                     }
                 }
-                HashMap<String,String> map = new HashMap();
-                for (int i = 0; i < fields.length ; i++) {
+                HashMap<String, String> map = new HashMap();
+                for (int i = 0; i < fields.length; i++) {
                     if (fields[i].get(object) instanceof String) {
                         map.put(fields[i].getName(), String.valueOf("'" + fields[i].get(object) + "'"));
                     } else {
@@ -171,6 +192,23 @@ public class DbConnector {
         return null;
     }
 
+    private boolean deleteQuery(String tableName, String queryParams) {
+        System.out.println("delete from " + tableName + " where " + queryParams);
+        try {
+            connectToDBAndGetStatement().executeUpdate("delete  from " + tableName + " where " + queryParams);
+            return true;
+        } catch (SQLException s) {
+            s.printStackTrace();
+            return false;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private void updateQuery() {
+
+    }
 
     private void addQuery(String tableName, String content, String values) throws SQLException, ClassNotFoundException {
         System.out.println("insert into " + tableName + " " + content + " values " + values);
