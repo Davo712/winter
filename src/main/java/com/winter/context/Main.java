@@ -2,8 +2,7 @@ package com.winter.context;
 
 import com.winter.context.annotation.Bean;
 import com.winter.context.dbLanguage.DbConnector;
-import com.winter.context.generatedClasses.User;
-import com.winter.context.util.ClassGenerator;
+import com.winter.context.classGenerator.ClassGenerator;
 
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class Main {
 
 
 
-       List<User> list = (List<User>) dbConnector.execute("native update user set id = 11 where id = 10", User.class);
+       // List<User> list = (List<User>) dbConnector.execute("native update user set id = 11 where id = 10", User.class);
 
 
     }

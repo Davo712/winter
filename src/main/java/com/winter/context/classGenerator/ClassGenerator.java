@@ -1,4 +1,4 @@
-package com.winter.context.util;
+package com.winter.context.classGenerator;
 
 import com.winter.context.Context;
 import com.winter.context.annotation.Bean;

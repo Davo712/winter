@@ -2,7 +2,7 @@ package com.winter.context;
 
 import com.winter.context.service.AutowiredService;
 import com.winter.context.service.BeanCreatorService;
-import com.winter.context.util.ClassGenerator;
+import com.winter.context.classGenerator.ClassGenerator;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;

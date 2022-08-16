@@ -1,16 +1,12 @@
 package com.winter.context.dbLanguage;
 
 import com.winter.context.Context;
-import com.winter.context.generatedClasses.User;
-import com.winter.context.util.ClassGenerator;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiConsumer;
 
 public class DbConnector {
 
