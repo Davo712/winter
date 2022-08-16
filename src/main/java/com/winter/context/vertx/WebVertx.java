@@ -12,9 +12,9 @@ import java.util.List;
 
 
 public class WebVertx extends AbstractVerticle {
-    private Vertx vertx = Vertx.vertx();
-    private HttpServer server = vertx.createHttpServer();
-    private Router router = Router.router(vertx);
+    public Vertx vertx = Vertx.vertx();
+    public HttpServer server = vertx.createHttpServer();
+    public Router router = Router.router(vertx);
 
     public int port;
     public Class aClass;
