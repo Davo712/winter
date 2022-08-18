@@ -296,10 +296,10 @@ public class DbConnector {
         }
     }
 
-    private <T> T nativeQuery(String query, Class<T> c) throws SQLException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    private <T> T nativeQuery(String query, Class c) throws SQLException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         System.out.println(query);
         if (query.split(" ")[0].equals("select")) {
-            List<T> list = new ArrayList<>();
+            List<T> list = new ArrayList<T>();
             ResultSet resultSet = connectToDBAndGetStatement().executeQuery(query);
             Constructor<?> ctor = c.getConstructor();
             Object o;

@@ -2,7 +2,7 @@ package com.winter.context;
 
 import com.winter.context.service.AutowiredService;
 import com.winter.context.service.BeanCreatorService;
-import com.winter.context.classGenerator.ClassGenerator;
+import com.winter.context.classGenerator.ClassGeneratorFromX;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
@@ -18,7 +18,7 @@ public class Context {
 
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    private ClassGenerator classGenerator;
+    private ClassGeneratorFromX classGenerator;
 
     public String scanPath;
 
@@ -29,7 +29,7 @@ public class Context {
         context.scanPath = scanPath;
         return context;
     }
-    public static Context getContext(String scanPath, ClassGenerator classGenerator) {
+    public static Context getContext(String scanPath, ClassGeneratorFromX classGenerator) {
         Context context = new Context();
         context.scanPath = scanPath;
         context.classGenerator = classGenerator;
