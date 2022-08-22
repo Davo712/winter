@@ -1,4 +1,4 @@
-# winter libary ( Class Generator / Annotations / Web / Broker / Query Generator(yQuery) )
+# winter framework ( Class Generator / Annotations / Web / Broker / Query Generator(yQuery) )
 
 Winter framework. The library also has a bean container (in short, you can use these @Bean, @Autowired annotations). The new xProtocol ord simple methods is used to generate classes, all examples are in the library codes.
 The library has an implementation with vertx (webVertx).
