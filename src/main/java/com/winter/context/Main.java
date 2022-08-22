@@ -27,6 +27,7 @@ public class Main {
         //   List<User> users = (List<User>) dbConnector.execute("native select * from user",User.class);
         // System.out.println(users);
 
+
         ClassGenerator classGenerator = new ClassGenerator("com", "com.winter.context");
         classGenerator.setClassName("MyClass");
         classGenerator.setSuperClass(Object.class);
