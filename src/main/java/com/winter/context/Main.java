@@ -38,6 +38,8 @@ public class Main {
         classGenerator.addImport("java.util.*");
         classGenerator.addImport("java.io.*");
         classGenerator.addMethod("private", true, String.class, "getTest", "String x, Boolean y", "System.out.println(x + \"  \" + y);  return x;");
+
+
         classGenerator.generate();
     }
 }
