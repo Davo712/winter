@@ -4,11 +4,8 @@ import com.winter.context.Context;
 import lombok.Data;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.List;
 
 @Data
 public class ClassGenerator {
@@ -56,8 +53,12 @@ public class ClassGenerator {
         imports = imports + "\n" + "import" + " " + package_ + ";";
     }
 
-    public void addMethod(String modifier, Class returnType, String methodName, String parameters, String body) throws NoSuchMethodException {
-        methods = methods + "\n" + "    " + modifier + " " + returnType.getSimpleName() + " " + methodName + "(" + parameters + ")" + " {" + "\n"
+    public void addMethod(String modifier, Boolean isStatic, Class returnType, String methodName, String parameters, String body) throws NoSuchMethodException {
+        String static_ = "";
+        if (isStatic) {
+            static_ = "static";
+        }
+        methods = methods + "\n" + "    " + modifier + " " + static_ + " " + returnType.getSimpleName() + " " + methodName + "(" + parameters + ")" + " {" + "\n"
                 + "        " + body
                 + "\n"
                 + "    }";

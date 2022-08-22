@@ -36,7 +36,7 @@ public class Main {
         classGenerator.addField(boolean.class, "isActive");
         classGenerator.addImport("java.util.*");
         classGenerator.addImport("java.io.*");
-        classGenerator.addMethod("private",String.class,"getTest","String x, Boolean y","System.out.println(x + \"  \" + y);  return x;" );
+        classGenerator.addMethod("private",true,String.class,"getTest","String x, Boolean y","System.out.println(x + \"  \" + y);  return x;" );
 
         classGenerator.generate();
     }
