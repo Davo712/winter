@@ -8,7 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.*;
 
-public class DbConnector {
+public class DbTool {
 
     private Connection connection = null;
     public String dbName;
@@ -16,7 +16,7 @@ public class DbConnector {
     public String password;
     public String hostName;
 
-    public DbConnector(String dbName, String username, String password, String hostName) {
+    public DbTool(String dbName, String username, String password, String hostName) {
         this.dbName = dbName;
         this.username = username;
         this.password = password;
@@ -43,7 +43,7 @@ public class DbConnector {
         return statement;
     }
 
-    public <T> T execute(String yQuery, Class<T> c) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public <T> T execute(String yQuery, Class<T> c) throws Exception {
         if (!Context.isRunned) {
             return null;
         }
@@ -150,7 +150,7 @@ public class DbConnector {
         }
     }
 
-    public <T> T execute(String yQuery, Class<T> c, Object object) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public <T> T execute(String yQuery, Class<T> c, Object object) throws Exception {
         if (!Context.isRunned) {
             return null;
         }
@@ -296,7 +296,7 @@ public class DbConnector {
         }
     }
 
-    private <T> T nativeQuery(String query, Class c) throws SQLException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    private <T> T nativeQuery(String query, Class<T> c) throws SQLException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         System.out.println(query);
         if (query.split(" ")[0].equals("select")) {
             List<T> list = new ArrayList<T>();
@@ -320,8 +320,12 @@ public class DbConnector {
                 list.add((T) o);
                 rsSize++;
             }
+            if (rsSize == 0) {
+                return null;
+            }
             if (rsSize == 1) {
                 Object obj = list.get(0);
+                System.out.println(obj);
                 return (T) obj;
             }
 

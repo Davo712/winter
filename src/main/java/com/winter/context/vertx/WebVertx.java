@@ -12,12 +12,13 @@ import java.util.List;
 
 
 public class WebVertx extends AbstractVerticle {
-    public Vertx vertx = Vertx.vertx();
-    public HttpServer server = vertx.createHttpServer();
+    private Vertx vertx = Vertx.vertx();
+    private HttpServer server = vertx.createHttpServer();
     public Router router = Router.router(vertx);
 
     public int port;
     public Class aClass;
+
 
     public WebVertx(int port, Class aClass) {
         this.port = port;
@@ -41,13 +42,15 @@ public class WebVertx extends AbstractVerticle {
     }
 
     @Override
-    public void start() throws Exception {
+    public void start() {
         if (!Context.isRunned) {
             return;
         }
         server.requestHandler(router);
         server.listen(port);
+        System.out.println("WebVertx started");
     }
+
 
     /// -----------------------------------------------------
 
@@ -96,22 +99,21 @@ public class WebVertx extends AbstractVerticle {
         }
     }
 
-    public void createEndPointWithParams(String endPoint, String httpMethodType, List<String> paramNames, String response) {
+    public void createEndPointWithParams(String endPoint, String httpMethodType, String response, String... paramNames) {
         if (!Context.isRunned) {
             return;
         }
-
         if (httpMethodType.equals("get")) {
             router.get(endPoint).handler(routingContext -> {
-                for (int i = 0; i < paramNames.size(); i++) {
-                    System.out.println(routingContext.request().getParam(paramNames.get(i)));
+                for (int i = 0; i < paramNames.length; i++) {
+                    System.out.println(routingContext.request().getParam(paramNames[i]));
                 }
                 routingContext.end(response);
             });
         } else if (httpMethodType.equals("post")) {
             router.post(endPoint).handler(routingContext -> {
-                for (int i = 0; i < paramNames.size(); i++) {
-                    System.out.println(routingContext.request().getParam(paramNames.get(i)));
+                for (int i = 0; i < paramNames.length; i++) {
+                    System.out.println(routingContext.request().getParam(paramNames[i]));
                 }
                 routingContext.end(response);
             });
