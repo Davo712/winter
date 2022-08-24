@@ -16,7 +16,7 @@ import java.util.List;
 public class MyClass {
 
     public void go() {
-        DbTool dbTool = new DbTool("banandb", "root", "", "localhost:3306");
+        DbTool dbTool = new DbTool("vertxdb", "root", "", "localhost:3306");
         WebVertx webVertx = WebVertx.getWebVertx(8080, MyClass.class);
         Router router = webVertx.router;
 
@@ -24,6 +24,19 @@ public class MyClass {
         webVertx.createRedirect("/home", "get", "/login");
         webVertx.createEndPoint("/info", "get", "Library for Vertx");
 
+
+        router.get("/getUsers").handler(routingContext -> {
+            try {
+                List<User> users = (List<User>) dbTool.execute("native select * from user", User.class);
+                if (users != null) {
+                    routingContext.end(Json.encodeToBuffer(users));
+                } else {
+                    routingContext.end(Json.encodeToBuffer("Not found"));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
         router.get("/getUser").handler(routingContext -> {
             String username = routingContext.request().getParam("username");
             User user = null;
@@ -45,6 +58,36 @@ public class MyClass {
                 boolean isDeleted = dbTool.execute("delete user (username='" + username + "')", Boolean.class);
                 if (isDeleted) {
                     routingContext.end(Json.encodeToBuffer("Deleted"));
+                } else {
+                    routingContext.end(Json.encodeToBuffer("Error"));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        router.get("/addUser").handler(routingContext -> {
+            String username = routingContext.request().getParam("username");
+            String password = routingContext.request().getParam("password");
+            long id = Long.valueOf(routingContext.request().getParam("id"));
+            try {
+                boolean isDeleted = dbTool.execute("add user (id='" + id + "',username='" + username + "',password='" + password + "')", Boolean.class);
+                if (isDeleted) {
+                    routingContext.end(Json.encodeToBuffer("Added"));
+                } else {
+                    routingContext.end(Json.encodeToBuffer("Error"));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        router.get("/updateUser").handler(routingContext -> {
+            String username = routingContext.request().getParam("username");
+            long id = Long.valueOf(routingContext.request().getParam("id"));
+
+            try {
+                boolean isDeleted = dbTool.execute("update user id=" + id + " (username='" + username + "')", Boolean.class);
+                if (isDeleted) {
+                    routingContext.end(Json.encodeToBuffer("Updated"));
                 } else {
                     routingContext.end(Json.encodeToBuffer("Error"));
                 }

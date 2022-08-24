@@ -1,26 +1,25 @@
 package com.winter.context.classGenerator;
 
 import com.winter.context.Context;
+import com.winter.context.service.BeanCreatorService;
 import lombok.Data;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-@Data
+
 public class ClassGenerator {
 
     private Class superClass;
     private Class implClass;
-    private String projectRootPath;
     private String packagePath;
     private String className;
     private String fields = "";
     private String imports = "";
     private String methods = "";
 
-    public ClassGenerator(String projectRootPath, String packagePath) {
-        this.projectRootPath = projectRootPath;
+    public ClassGenerator(String packagePath) throws Exception {
         this.packagePath = packagePath;
     }
 
@@ -70,6 +69,7 @@ public class ClassGenerator {
             System.out.println("Winter is not runned");
             return;
         }
+
 
         String filePath = "src/main/java/" + packagePath.replace(".", "/");
         File file = new File(filePath + "\\" + className + ".java");

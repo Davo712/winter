@@ -1,5 +1,6 @@
 package com.winter.context;
 
+import com.winter.context.annotation.Bean;
 import com.winter.context.service.AutowiredService;
 import com.winter.context.service.BeanCreatorService;
 import com.winter.context.classGenerator.ClassGeneratorFromX;
@@ -11,6 +12,7 @@ import lombok.Setter;
 import java.lang.reflect.Method;
 
 @Data
+@Bean
 public class Context {
 
     private Context() {
